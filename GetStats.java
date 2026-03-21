@@ -76,9 +76,15 @@ public class GetStats {
                 }
 
                 PlayerStats player_stats = new PlayerStats(player, fKills, wins, beds, level, fDeaths);
+                StatsCache.setPlayer(player, player_stats);
 
                 return player_stats.toString();
             } else {
+                // attempt to get stats from cache if the API request was denied
+                String stats_string = StatsCache.getPlayer(player);
+                if(stats_string != null) {
+                    return stats_string;
+                }
                 return EnumChatFormatting.AQUA + player + EnumChatFormatting.RESET + " - error getting data: non 200 response code";
             }
         } catch (JSONException e) {
