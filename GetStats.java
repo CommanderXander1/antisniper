@@ -5,14 +5,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Scanner;
 
-import net.minecraft.client.util.JsonException;
 import net.minecraft.util.EnumChatFormatting;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class GetStats {
-    public static String FetchData(String player) {
-        System.out.println(ApiKey.key);
+    public static String FetchData(String player, String color) {
         if(ApiKey.key == null) {
             return "Please set API key before using stats, use '/as apikey {key}' to do this";
         }
@@ -31,7 +29,6 @@ public class GetStats {
                     sb.append(scanner.nextLine());
                 }
 
-                System.out.println(sb.toString());
                 JSONObject json = new JSONObject(sb.toString());
 
                 JSONObject playerData = json.getJSONObject("player");
@@ -75,7 +72,12 @@ public class GetStats {
                     fDeaths = 0;
                 }
 
-                PlayerStats player_stats = new PlayerStats(player, fKills, wins, beds, level, fDeaths);
+                PlayerStats player_stats;
+                if(color != null) {
+                    player_stats = new PlayerStats(color + player, fKills, wins, beds, level, fDeaths);
+                } else {
+                    player_stats = new PlayerStats(player, fKills, wins, beds, level, fDeaths);
+                }
                 StatsCache.setPlayer(player, player_stats);
 
                 return player_stats.toString();

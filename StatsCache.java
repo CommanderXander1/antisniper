@@ -10,6 +10,10 @@ public class StatsCache {
     }
 
     public static String getPlayer(String player) {
+        PlayerStats stats_string = StatsCache.Cache.get(player.toLowerCase());
+        if(stats_string == null) {
+            return null;
+        }
         return StatsCache.Cache.get(player.toLowerCase()).toString();
     }
 }

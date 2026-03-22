@@ -5,8 +5,13 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 
 public class AntiSniperCommand extends CommandBase {
     @Override
@@ -28,11 +33,7 @@ public class AntiSniperCommand extends CommandBase {
                     @Override
                     public void run() {
                         for(int i = 1; i < args.length; i++) {
-                            try {
-                                player.addChatMessage(new ChatComponentText(GetStats.FetchData(args[i])));
-                            } catch(Exception e) {
-                                player.addChatMessage(new ChatComponentText(EnumChatFormatting.AQUA + args[i] + EnumChatFormatting.RESET + " - error fetching data: " + e));
-                            }
+                            player.addChatMessage(new ChatComponentText(GetStats.FetchData(args[i], null)));
                         }
                     }
                 };
@@ -45,13 +46,35 @@ public class AntiSniperCommand extends CommandBase {
                 Runnable task = new Runnable() {
                     @Override
                     public void run() {
+                        HashMap<String, ArrayList<String>> teams = new HashMap<String, ArrayList<String>>();
+                        ArrayList<String> not_on_team = new ArrayList<String>();
+
                         for(EntityPlayer p : Minecraft.getMinecraft().theWorld.playerEntities) {
                             String name = p.getDisplayNameString();
-                            try {
-                                player.addChatMessage(new ChatComponentText(GetStats.FetchData(name)));
-                            } catch(Exception e) {
-                                player.addChatMessage(new ChatComponentText(EnumChatFormatting.AQUA + name + EnumChatFormatting.RESET + " - error fetching data: " + e));
+                            ScorePlayerTeam team = (ScorePlayerTeam) p.getTeam();
+
+                            if(team != null) {
+                                String stats_string = GetStats.FetchData(name, team.getColorPrefix());
+
+                                if(teams.containsKey(team.getColorPrefix())) {
+                                    teams.get(team.getColorPrefix()).add(stats_string);
+                                } else {
+                                    teams.put(team.getColorPrefix(), new ArrayList<String>(Arrays.asList(stats_string)));
+                                }
+                            } else {
+                                not_on_team.add(GetStats.FetchData(name, null));
                             }
+                        }
+
+                        // iterate through hashmap so that team members are grouped together
+                        for(ArrayList<String> stats_list : teams.values()) {
+                            for(String stats : stats_list) {
+                                player.addChatMessage(new ChatComponentText(stats));
+                            }
+                        }
+
+                        for(String stats : not_on_team) {
+                            player.addChatMessage(new ChatComponentText(stats));
                         }
                     }
                 };

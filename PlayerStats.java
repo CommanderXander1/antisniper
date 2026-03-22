@@ -25,7 +25,7 @@ public class PlayerStats {
     }
 
     public String toString() {
-        return  "[" + "\u272A" + EnumChatFormatting.YELLOW + star + EnumChatFormatting.RESET + "] " + EnumChatFormatting.AQUA + name + EnumChatFormatting.RESET + " - " +
+        return  "[" + "\u272A" + EnumChatFormatting.DARK_GREEN + star + EnumChatFormatting.RESET + "] " + EnumChatFormatting.GRAY + name + EnumChatFormatting.RESET + " - " +
                 EnumChatFormatting.GOLD + "fkdr: " + EnumChatFormatting.GREEN + fkdr +
                 EnumChatFormatting.RESET + ", " + EnumChatFormatting.GOLD + "finals: " + EnumChatFormatting.GREEN + finals +
                 EnumChatFormatting.RESET + ", " + EnumChatFormatting.GOLD + "wins: " + EnumChatFormatting.GREEN + wins +
