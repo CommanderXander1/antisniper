@@ -8,19 +8,54 @@ import java.util.Scanner;
 import net.minecraft.util.EnumChatFormatting;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONArray;
 
 public class GetStats {
     public static String FetchData(String player, String color) {
-        if(ApiKey.key == null) {
-            return "Please set API key before using stats, use '/as apikey {key}' to do this";
+        if(ApiKey.hypixelKey == null) {
+            return "Please set a hypixel API key before using stats, use '/as hypixelkey {key}' to do this";
         }
+
+        // check blacklist
+        String tag_string = "";
+        if(ApiKey.urchinKey != null) {
+            try {
+                URL url = new URL("https://urchin.ws/player/" + player + "?key=" + ApiKey.urchinKey + "&sources=GAME");
+                HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.setRequestProperty("User-Agent", "Mozilla/5.0");
+
+                int status = conn.getResponseCode();
+
+                if(status == HttpsURLConnection.HTTP_OK) {
+                    StringBuilder sb = new StringBuilder();
+                    Scanner scanner = new Scanner(conn.getInputStream());
+                    while (scanner.hasNext()) {
+                        sb.append(scanner.nextLine());
+                    }
+
+                    JSONObject json = new JSONObject(sb.toString());
+                    System.out.println(sb.toString());
+                    JSONArray tags = new JSONArray(json.getJSONArray("tags"));
+                    for(int i = 0; i < tags.length(); i++) {
+                        JSONObject tag = tags.getJSONObject(i);
+                        tag_string += EnumChatFormatting.DARK_RED.toString() + EnumChatFormatting.BOLD + tag.getString("type") + " ";
+                    }
+                } else {
+                    System.out.println("Non-200 status getting blacklist for " + player + ": " + status);
+                }
+            } catch(IOException e) {
+                System.out.println("Error querying blacklist: " + e);
+            }
+        }
+
+        // get stats
         try {
-            URL url = new URL("https://api.hypixel.net/player?key=" + ApiKey.key + "&name=" + player);
+            URL url = new URL("https://api.hypixel.net/player?key=" + ApiKey.hypixelKey + "&name=" + player);
             HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
 
             int status = conn.getResponseCode();
-            System.out.println("Response code: " + status);
 
             if(status == HttpsURLConnection.HTTP_OK) {
                 StringBuilder sb = new StringBuilder();
@@ -72,11 +107,14 @@ public class GetStats {
                     fDeaths = 0;
                 }
 
+
+
+
                 PlayerStats player_stats;
                 if(color != null) {
-                    player_stats = new PlayerStats(color + player, fKills, wins, beds, level, fDeaths);
+                    player_stats = new PlayerStats(color + player, fKills, wins, beds, level, fDeaths, tag_string);
                 } else {
-                    player_stats = new PlayerStats(player, fKills, wins, beds, level, fDeaths);
+                    player_stats = new PlayerStats(player, fKills, wins, beds, level, fDeaths, tag_string);
                 }
                 StatsCache.setPlayer(player, player_stats);
 

@@ -11,7 +11,8 @@ import java.io.FileWriter;
 
 public class ApiKey {
     public static File file;
-    public static String key;
+    public static String hypixelKey;
+    public static String urchinKey;
 
     public static void init() {
         EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
@@ -25,10 +26,12 @@ public class ApiKey {
 
             file = new File(dir, "settings.txt");
             if(file.createNewFile()) {
-                key = null;
+                hypixelKey = null;
+                urchinKey = null;
             } else {
                 BufferedReader reader = new BufferedReader(new FileReader(file));
-                key = reader.readLine();
+                hypixelKey = reader.readLine();
+                urchinKey = reader.readLine();
                 reader.close();
             }
         } catch(Exception e) {
@@ -37,18 +40,33 @@ public class ApiKey {
         }
     }
 
-    public static void setKey(String key) {
+    public static void setHypixelKey(String key) {
         EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
         try {
             FileWriter writer = new FileWriter(file, false);
-            writer.write(key);
+            writer.write(key + "\n" + urchinKey);
             writer.close();
-            ApiKey.key = key;
-            System.out.println("set api key to " + key);
-            player.addChatMessage(new ChatComponentText( "Set api key to key ending in '" + key.substring(key.length() - 4) + "'"));
+            ApiKey.hypixelKey = key;
+            System.out.println("set hypixel api key to " + key);
+            player.addChatMessage(new ChatComponentText( "Set hypixel api key to key ending in '" + key.substring(key.length() - 4) + "'"));
         } catch(Exception e) {
             System.out.println(e);
-            player.addChatMessage(new ChatComponentText("Failed to set antisniper api-key for reason: " + e));
+            player.addChatMessage(new ChatComponentText("Failed to set hypixel api key for reason: " + e));
+        }
+    }
+
+    public static void setUrchinKey(String key) {
+        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+        try {
+            FileWriter writer = new FileWriter(file, false);
+            writer.write(hypixelKey + "\n" + key);
+            writer.close();
+            ApiKey.urchinKey = key;
+            System.out.println("set urchin api key to " + key);
+            player.addChatMessage(new ChatComponentText( "Set urchin api key to key ending in '" + key.substring(key.length() - 4) + "'"));
+        } catch(Exception e) {
+            System.out.println(e);
+            player.addChatMessage(new ChatComponentText("Failed to set urchin api key for reason: " + e));
         }
     }
 }

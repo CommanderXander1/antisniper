@@ -18,7 +18,7 @@ public class AntiSniperCommand extends CommandBase {
     public String getCommandName() { return "as"; }
 
     @Override
-    public String getCommandUsage(ICommandSender sender) { return "/as <stats|apikey>"; }
+    public String getCommandUsage(ICommandSender sender) { return "/as <stats|hypixelkey|urchinkey>"; }
 
     @Override
     public void processCommand(ICommandSender sender, final String[] args) {
@@ -81,18 +81,28 @@ public class AntiSniperCommand extends CommandBase {
                 Thread thread = new Thread(task);
                 thread.start();
             }
-        } else if (args.length > 0 && args[0].equals("apikey")) {
+        } else if (args.length > 0 && args[0].toLowerCase().equals("hypixelkey")) {
             if(args.length == 2) {
                 if(args[1].length() == 36) {
-                    ApiKey.setKey(args[1]);
+                    ApiKey.setHypixelKey(args[1]);
                 } else {
                     player.addChatMessage(new ChatComponentText("Please provide a valid key (36 characters)"));
                 }
             } else {
-                player.addChatMessage(new ChatComponentText( "Please provide a single argument for '/as apikey {api-key}'"));
+                player.addChatMessage(new ChatComponentText( "Please provide a single argument for '/as hypixelkey {api-key}'"));
+            }
+        } else if (args.length > 0 && args[0].toLowerCase().equals("urchinkey")) {
+            if(args.length == 2) {
+                if(args[1].length() == 43) {
+                    ApiKey.setUrchinKey(args[1]);
+                } else {
+                    player.addChatMessage(new ChatComponentText("Please provide a valid key (43 characters)"));
+                }
+            } else {
+                player.addChatMessage(new ChatComponentText( "Please provide a single argument for '/as urchinkey {api-key}'"));
             }
         } else {
-            player.addChatMessage(new ChatComponentText( "Please provide an argument. Valid usage follows '/as <stats|apikey>'"));
+            player.addChatMessage(new ChatComponentText( "Please provide an argument. Valid usage follows '/as <stats|hypixelkey|urchinkey>'"));
         }
     }
 
