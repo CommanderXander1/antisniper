@@ -39,7 +39,7 @@ public class GetStats {
                     JSONArray tags = new JSONArray(json.getJSONArray("tags"));
                     for(int i = 0; i < tags.length(); i++) {
                         JSONObject tag = tags.getJSONObject(i);
-                        tag_string += EnumChatFormatting.DARK_RED.toString() + EnumChatFormatting.BOLD + tag.getString("type") + " ";
+                        tag_string += EnumChatFormatting.DARK_RED.toString() + EnumChatFormatting.BOLD + "[" + tag.getString("type").replace("_", " ") + "] ";
                     }
                 } else {
                     System.out.println("Non-200 status getting blacklist for " + player + ": " + status);
@@ -125,10 +125,10 @@ public class GetStats {
                 if(stats_string != null) {
                     return stats_string;
                 }
-                return EnumChatFormatting.AQUA + player + EnumChatFormatting.RESET + " - error getting data: non 200 response code";
+                return tag_string + EnumChatFormatting.AQUA + player + EnumChatFormatting.RESET + " - error getting data: non 200 response code";
             }
         } catch (JSONException e) {
-            return EnumChatFormatting.AQUA + player + EnumChatFormatting.RESET + " - player has no data";
+            return tag_string + EnumChatFormatting.AQUA + player + EnumChatFormatting.RESET + " - player has no data";
         }
         catch (IOException e) {
             return EnumChatFormatting.AQUA + player + EnumChatFormatting.RESET + " - error getting data: " + e;
