@@ -87,20 +87,20 @@ public class AntiSniperCommand extends CommandBase {
             }
         } else if (args.length > 0 && args[0].toLowerCase().equals("hypixelkey")) {
             if(args.length == 2) {
-                if(args[1].length() == 36) {
+                if(args[1].length() > 30 && args[1].length() < 50) {
                     ApiKey.setHypixelKey(args[1]);
                 } else {
-                    player.addChatMessage(new ChatComponentText("Please provide a valid key (36 characters)"));
+                    player.addChatMessage(new ChatComponentText("Please provide a valid key (30-50 characters)"));
                 }
             } else {
                 player.addChatMessage(new ChatComponentText( "Please provide a single argument for '/as hypixelkey {api-key}'"));
             }
         } else if (args.length > 0 && args[0].toLowerCase().equals("urchinkey")) {
             if(args.length == 2) {
-                if(args[1].length() == 43) {
+                if(args[1].length() > 30 && args[1].length() < 50) {
                     ApiKey.setUrchinKey(args[1]);
                 } else {
-                    player.addChatMessage(new ChatComponentText("Please provide a valid key (43 characters)"));
+                    player.addChatMessage(new ChatComponentText("Please provide a valid key (30-50 characters)"));
                 }
             } else {
                 player.addChatMessage(new ChatComponentText( "Please provide a single argument for '/as urchinkey {api-key}'"));
