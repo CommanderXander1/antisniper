@@ -2,15 +2,16 @@ package com.antisniper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 
 public class AntiSniperCommand extends CommandBase {
@@ -49,9 +50,12 @@ public class AntiSniperCommand extends CommandBase {
                         HashMap<String, ArrayList<String>> teams = new HashMap<String, ArrayList<String>>();
                         ArrayList<String> not_on_team = new ArrayList<String>();
 
-                        for(EntityPlayer p : Minecraft.getMinecraft().theWorld.playerEntities) {
-                            String name = p.getDisplayNameString();
-                            ScorePlayerTeam team = (ScorePlayerTeam) p.getTeam();
+                        // make a copy of the list to iterate over otherwise it throws ConcurrentModificationException
+                        Collection<NetworkPlayerInfo> tab_list = new ArrayList<NetworkPlayerInfo>(Minecraft.getMinecraft().getNetHandler().getPlayerInfoMap());
+
+                        for(NetworkPlayerInfo p : tab_list) {
+                            String name = p.getGameProfile().getName();
+                            ScorePlayerTeam team = p.getPlayerTeam();
 
                             if(team != null) {
                                 String stats_string = GetStats.FetchData(name, team.getColorPrefix());

@@ -44,7 +44,7 @@ public class GetStats {
                 } else {
                     System.out.println("Non-200 status getting blacklist for " + player + ": " + status);
                 }
-            } catch(IOException e) {
+            } catch(Exception e) {
                 System.out.println("Error querying blacklist: " + e);
             }
         }
@@ -106,8 +106,6 @@ public class GetStats {
                 } catch (Exception e) {
                     fDeaths = 0;
                 }
-
-
 
 
                 PlayerStats player_stats;
